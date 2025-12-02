@@ -3,45 +3,44 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-// Dinh nghia cac hang so gioi han so luong va kich thuoc chuoi
-#define MAX_BOOK 1000       // So luong sach toi da
-#define MAX_BORROW 100      // So luong phieu muon toi da
-#define MAX_TITLE 100       // Kich thuoc tieu de sach toi da
-#define MAX_AUTHOR 100      // Kich thuoc ten tac gia toi da
-#define BOOKS_PER_PAGE 10   // So luong sach hien thi tren moi trang
+#define MAX_BOOK 1000       
+#define MAX_BORROW 100     
+#define MAX_TITLE 100      
+#define MAX_AUTHOR 100      
+#define BOOKS_PER_PAGE 10   
 
 // Khai bao cau truc Book
 struct Book{
-    int bookId;         // ID sach (tu dong tang)
-    char title[MAX_TITLE];  // Tieu de sach
-    char author[MAX_AUTHOR]; // Tac gia
-    int publishYear;    // Nam xuat ban
-    int quantity;       // So luong hien co trong kho
+    int bookId;        
+    char title[MAX_TITLE];  
+    char author[MAX_AUTHOR]; 
+    int publishYear;   
+    int quantity;       
 };
 
 // Khai bao cau truc Date
 struct Date{
-    int day;    // Ngay
-    int month;  // Thang
-    int year;   // Nam
+    int day;    
+    int month;
+    int year;   
 };
 
 // Khai bao cau truc Borrow (Phieu muon/tra)
 struct Borrow{
-    int borrowId;       // ID phieu muon (tu dong tang)
-    int bookId;         // ID sach duoc muon
-    struct Date borrowDate; // Ngay muon
-    struct Date borrowReturn; // Ngay tra (0/0/0 neu chua tra)
-    char borrowerName[50]; // Ten nguoi muon
-    int status;         // Trang thai: 1 = Dang muon, 0 = Da tra
+    int borrowId;     
+    int bookId;         
+    struct Date borrowDate; 
+    struct Date borrowReturn; 
+    char borrowerName[50];
+    int status;        
 };
 
 // Khai bao bien toan cuc luu tru du lieu
 struct Book books[MAX_BOOK];
-int bookCount = 0; // So luong sach hien tai
+int bookCount = 0;
 
 struct Borrow borrows[MAX_BORROW];
-int borrowCount = 0; // So luong phieu muon hien tai
+int borrowCount = 0; 
 
 // Khai bao prototype cac ham chinh
 void addBook();
@@ -91,12 +90,11 @@ int stringContainsCaseInsensitive(const char *haystack, const char *needle) {
             sub_h[j] = tolower((unsigned char)sub_h[j]);
         }
 
-        // So sanh chuoi con voi chuoi can tim
         if (strcmp(sub_h, n) == 0) {
-            return 1; // Tim thay
+            return 1; 
         }
     }
-    return 0; // Khong tim thay
+    return 0;
 }
 
 // Ham kiem tra xem sach co dang duoc muon va chua tra khong
@@ -110,7 +108,7 @@ int isBookCurrentlyBorrowed(int bookId) {
             return 1; // Dang duoc muon
         }
     }
-    return 0; // Khong co ai dang muon
+    return 0; 
 }
 
 // Khai bao prototype cac ham xu ly Date
@@ -137,16 +135,16 @@ int daysInMonth(int month, int year) {
         case 4: case 6: case 9: case 11:
             return 30;
         case 2:
-            return isLeapYear(year) ? 29 : 28; // Xu ly nam nhuan cho thang 2
+            return isLeapYear(year) ? 29 : 28; 
     }
-    return 0; // Khong bao gio xay ra neu month hop le
+    return 0; 
 }
 
 // Ham kiem tra ngay thang co hop le khong
 int isValidDate(struct Date d) {
-    if (d.year < 1900) return 0; // Nam phai >= 1900
-    if (d.month < 1 || d.month > 12) return 0; // Thang phai tu 1 den 12 
-    if (d.day < 1 || d.day > daysInMonth(d.month, d.year)) return 0; // Ngay phai hop le voi thang/nam
+    if (d.year < 1900) return 0;
+    if (d.month < 1 || d.month > 12) return 0; 
+    if (d.day < 1 || d.day > daysInMonth(d.month, d.year)) return 0; 
     return 1;
 }
 
@@ -173,7 +171,7 @@ int isDateAfter(struct Date d1, struct Date d2) {
     if (d1.year < d2.year) return 0;
     if (d1.month > d2.month) return 1;
     if (d1.month < d2.month) return 0;
-    return d1.day >= d2.day; // Cung nam, cung thang, ngay d1 >= ngay d2
+    return d1.day >= d2.day; 
 }
 
 // Ham kiem tra chuoi co chua ky tu so khong
@@ -205,18 +203,16 @@ void readNonEmptyString(char *dest, int maxSize, const char *prompt, int allowDi
                 len--;
             }
             
-            // Cat bo khoang trang o dau
             size_t start = 0;
             while (start < len && isspace((unsigned char)buffer[start])) {
                 start++;
             }
-            // Cat bo khoang trang o cuoi
             size_t end = len;
             while (end > start && isspace((unsigned char)buffer[end - 1])) {
                 end--;
             }
             
-            if (end > start) { // Neu chuoi khong rong sau khi cat
+            if (end > start) { 
                 char trimmed_str[maxSize];
                 size_t trimmed_len = end - start;
                 size_t copy_len = trimmed_len < maxSize ? trimmed_len : maxSize - 1;
@@ -224,7 +220,6 @@ void readNonEmptyString(char *dest, int maxSize, const char *prompt, int allowDi
                 memmove(trimmed_str, buffer + start, copy_len);
                 trimmed_str[copy_len] = '\0';
                 
-                // Kiem tra co cho phep chu so khong
                 if (allowDigit == 0 && containsDigit(trimmed_str)) {
                     printf("Loi: Khong duoc nhap ky tu so (0-9). Nhap lai!\n");
                     continue;
@@ -252,25 +247,22 @@ void readStringAllowEmpty(char *dest, int maxSize, const char *prompt) {
         len--;
     }
     
-    // Cat bo khoang trang o dau
     size_t start = 0;
     while (start < len && isspace((unsigned char)buffer[start])) {
         start++;
     }
-    // Cat bo khoang trang o cuoi
     size_t end = len;
     while (end > start && isspace((unsigned char)buffer[end - 1])) {
         end--;
     }
     
-    if (end > start) { // Neu chuoi khong rong sau khi cat
+    if (end > start) { 
         len = end - start;
         size_t copy_len = len < maxSize ? len : maxSize - 1;
-        // Sao chep noi dung da duoc cat
         memmove(dest, buffer + start, copy_len);
         dest[copy_len] = '\0';
     } else {
-        dest[0] = '\0'; // Neu chuoi rong thi gan gia tri rong
+        dest[0] = '\0'; 
     }
 }
 
@@ -278,10 +270,10 @@ void readStringAllowEmpty(char *dest, int maxSize, const char *prompt) {
 int checkUniqueTitle(const struct Book books[], int bookCount, const char *title) {
     for (int i = 0; i < bookCount; i++) {
         if (strcmp(books[i].title, title) == 0) {
-            return 0; // Bi trung
+            return 0; 
         }
     }
-    return 1; // Khong bi trung
+    return 1; 
 }
 
 // Ham doc so nguyen hop le trong mot pham vi nhat dinh
@@ -292,32 +284,28 @@ int getValidIntegerRange(const char *prompt, int minValue, int allowZeroKeep) {
         printf("%s", prompt);
         if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
             size_t len = strlen(buffer);
-            // Loai bo ky tu xuong dong
             if (len > 0 && buffer[len - 1] == '\n') {
                 buffer[len - 1] = '\0';
                 len--;
             }
             
-            // Xu ly truong hop bo trong (chi khi allowZeroKeep = 1)
             if (len == 0) {
                 if (allowZeroKeep == 1) return 0;
                 printf("Loi: Khong duoc de trong!\n");
                 continue;
             }
             
-            // Doc so nguyen
             int scan_result = sscanf(buffer, "%d", &number);
             if (scan_result == 1) {
                 int consumed_len = 0;
-                // Kiem tra xem sau khi doc so con ky tu rac nao khong (ngoai khoang trang)
                 sscanf(buffer, "%d%n", &number, &consumed_len);
                 size_t i = consumed_len;
                 while (i < strlen(buffer) && isspace((unsigned char)buffer[i])) {
                     i++;
                 }
                 
-                if (i == strlen(buffer)) { // Neu khong co ky tu rac
-                    if (number >= minValue) return number; // Tra ve neu hop le
+                if (i == strlen(buffer)) {
+                    if (number >= minValue) return number; 
                     printf("Loi: Phai >= %d\n", minValue);
                 } else {
                     printf("Loi: Khong hop le! Hay nhap so nguyen.\n");
@@ -343,20 +331,18 @@ int getValidMenuChoice(const char *prompt, int min, int max) {
                 continue;
             }
             
-            // Doc so nguyen
             int scan_result = sscanf(buffer, "%d", &number);
             if (scan_result == 1) {
                 int consumed_len;
-                // Kiem tra ky tu rac
                 sscanf(buffer, "%d%n", &number, &consumed_len);
                 size_t i = consumed_len;
                 while (i < strlen(buffer) && isspace((unsigned char)buffer[i])) {
                     i++;
                 }
                 
-                if (i == strlen(buffer)) { // Neu khong co ky tu rac
+                if (i == strlen(buffer)) { 
                     if (number >= min && number <= max) {
-                        return number; // Tra ve neu hop le
+                        return number;
                     }
                     printf("Loi: Lua chon phai la so tu %d den %d.\n", min, max);
                 } else {
@@ -369,37 +355,44 @@ int getValidMenuChoice(const char *prompt, int min, int max) {
     }
 }
 
-// Ham main (chuc nang chinh)
 int main(){
     int choice;
     
-    // Khoi tao du lieu mau cho sach
     books[0] = (struct Book){1, "Lap trinh C co ban", "Nguyen Van A", 2018, 5};
     books[1] = (struct Book){2, "Toan", "Tran Thi B", 2020, 4};
     books[2] = (struct Book){3, "Lich su Viet Nam", "Pham Van C", 1995, 3};
     books[3] = (struct Book){4, "Tieng Viet ", "Le Van D", 2023, 8};
-    bookCount = 4;
+    books[4] = (struct Book){5, "Giai tich 1", "Dinh Cong E", 2019, 12};
+    books[5] = (struct Book){6, "Kinh te vi mo", "Doan Thi F", 2021, 6};
+    books[6] = (struct Book){7, "Co so du lieu", "Hoang Van G", 2017, 9};
+    books[7] = (struct Book){8, "Marketing can ban", "Cao Xuan H", 2022, 2};
+    books[8] = (struct Book){9, "Phap luat dai cuong", "Vo Thi K", 2016, 7};
+    books[9] = (struct Book){10, "Vat ly dai cuong 1", "Bui Van L", 2015, 10};
+    books[10] = (struct Book){11, "Van hoc hien dai", "Ngo Thi M", 2024, 1}; 
+    books[11] = (struct Book){12, "Dien toan dam may", "Ly Van N", 2023, 5};
+    books[12] = (struct Book){13, "Ky thuat lap trinh", "Trinh Thi P", 2018, 0};
+    books[13] = (struct Book){14, "Giao trinh Tieng Anh", "Hoang Van Q", 2020, 3};
+    books[14] = (struct Book){15, "Tri tue nhan tao", "Nguyen Duc R", 2024, 15};
+    books[15] = (struct Book){16, "Thi truong chung khoan", "Le Van S", 2021, 4};
+    books[16] = (struct Book){17, "Quan ly du an", "Vu Thi T", 2019, 6};
+    books[17] = (struct Book){18, "Linh kien dien tu", "Tran Van U", 2017, 2};
+    books[18] = (struct Book){19, "Am thuc vung mien", "Hoang Thi V", 2022, 5};
+    bookCount = 19;
     
-    // Khoi tao du lieu mau cho phieu muon
-    borrows[0] = (struct Borrow){
-        1,
-        1,
-        {15, 11, 2025}, 
-        {0, 0, 0},      // Chua tra
-        "Ng Van A",
-        1               // Dang muon
-    };
-    borrows[1] = (struct Borrow){
-        2,
-        2,  
-        {10, 10, 2025}, 
-        {20, 10, 2025}, // Da tra
-        "Tran Thi B",
-        0               // Da tra
-    };
-    borrowCount = 2;
+    borrows[0] = (struct Borrow){1, 1, {15, 11, 2025}, {0, 0, 0}, "Ng Van A", 1}; 
+    borrows[1] = (struct Borrow){2, 2, {10, 10, 2025}, {20, 10, 2025}, "Tran Thi B", 0}; 
+    borrows[2] = (struct Borrow){3, 6, {01, 12, 2025}, {0, 0, 0}, "Pham Van T", 1}; 
+    borrows[3] = (struct Borrow){4, 5, {25, 11, 2025}, {30, 11, 2025}, "Le Thi H", 0}; 
+    borrows[4] = (struct Borrow){5, 7, {01, 12, 2025}, {0, 0, 0}, "Doan Van P", 1}; 
+    borrows[5] = (struct Borrow){6, 10, {18, 11, 2025}, {28, 11, 2025}, "Ngo Thi Z", 0};
+    borrows[6] = (struct Borrow){7, 15, {01, 12, 2025}, {0, 0, 0}, "Tran Xuan Y", 1};
+    borrows[7] = (struct Borrow){8, 16, {10, 11, 2025}, {0, 0, 0}, "Nguyen Cong X", 1}; 
+    borrows[8] = (struct Borrow){9, 1, {20, 11, 2025}, {25, 11, 2025}, "Hoang Van W", 0}; 
+    borrows[9] = (struct Borrow){10, 18, {02, 12, 2025}, {0, 0, 0}, "Le Thi V", 1}; 
+    borrows[10] = (struct Borrow){11, 5, {15, 11, 2025}, {0, 0, 0}, "Pham Van K", 1}; 
+    borrows[11] = (struct Borrow){12, 3, {25, 10, 2025}, {01, 11, 2025}, "Ly Thi J", 0};
+    borrowCount = 12;
     
-    // Vong lap hien thi menu va xu ly lua chon
     do {
         printf("|======================================================|");
         printf("\n|                      MENU                            |\n");
@@ -445,10 +438,9 @@ void addBook() {
     }
     
     struct Book newBook;
-    newBook.bookId = bookCount + 1; // ID tu dong tang
+    newBook.bookId = bookCount + 1; 
     printf("Ma sach tu dong: %d\n", newBook.bookId);
     
-    // Nhap tieu de, kiem tra trung lap
     while (1) {
         readNonEmptyString(newBook.title, sizeof(newBook.title), "Nhap tieu de: ",0);
         if (checkUniqueTitle(books, bookCount, newBook.title)) break;
@@ -487,11 +479,8 @@ void updateBook() {
     
     struct Book *b = &books[idx];
     char tmp[MAX_TITLE];
-    
-    // Cap nhat Tieu de (kiem tra trung lap, truong hop tu trung voi chinh no)
     while (1) {
         readNonEmptyString(tmp, sizeof(tmp), "Nhap Tieu de moi : ",0);
-        // Neu tieu de moi la duy nhat hoac trung voi tieu de cu
         if (checkUniqueTitle(books, bookCount, tmp) || strcmp(b->title, tmp) == 0) {
             strcpy(b->title, tmp);
             break;
@@ -545,17 +534,17 @@ void listBook() {
         choice = getValidMenuChoice("Lua chon cua ban (1, 2, 3): ", 1, 3);
         
         switch (choice) {
-            case 1: // Trang truoc
+            case 1: 
                 if (currentPage > 1) {
                     currentPage--;
                 } else {
                     printf("Dang o trang dau tien!\n");
                 }
                 break;
-            case 2: // Quay lai Menu
+            case 2: 
                 printf("Quay lai Menu chinh\n");
                 return;
-            case 3: // Trang sau
+            case 3: 
                 if (currentPage < totalPages) {
                     currentPage++;
                 } else {
@@ -563,7 +552,7 @@ void listBook() {
                 }
                 break;
         }
-    } while (1); // Lap cho den khi nguoi dung chon Quay lai Menu
+    } while (1);
 }
 
 // Ham xoa thong tin sach
@@ -577,7 +566,6 @@ void deleteBook() {
     int bookId = getValidIntegerRange("Nhap ID sach can xoa: ", 1, 0); 
     int idx = -1;
     
-    // Tim sach theo ID
     for (int i = 0; i < bookCount; i++) {
         if (books[i].bookId == bookId) {
             idx = i;
@@ -596,7 +584,6 @@ void deleteBook() {
         return; 
     }
     
-    // Xoa sach bang cach dich chuyen mang
     for (int i = idx; i < bookCount - 1; i++) {
         books[i] = books[i + 1];
     }
@@ -621,7 +608,6 @@ void searchBook() {
     struct Book foundBooks[MAX_BOOK];
     int foundCount = 0;
 
-    // Tim kiem va luu cac sach tim thay
     for (int i = 0; i < bookCount; i++) {
         if (stringContainsCaseInsensitive(books[i].title, searchName)) {
             foundBooks[foundCount++] = books[i];
@@ -633,7 +619,6 @@ void searchBook() {
         return;
     }
 
-    // Hien thi ket qua
     printf("+------+------------------------------------------+----------------------+------+----------+\n");
     printf("| %-4s | %-40s | %-20s | %-4s | %-8s |\n", "ID", "TIEU DE", "TAC GIA", "NAM", "SO LUONG");
     printf("+------+------------------------------------------+----------------------+------+----------+\n");
@@ -659,10 +644,9 @@ void borrowBook() {
     int bookIdx = -1;
     int bookId;
     
-    newBorrow.borrowId = borrowCount + 1; // ID phieu muon tu dong tang
+    newBorrow.borrowId = borrowCount + 1;
     printf("Ma phieu muon tu dong: %d\n", newBorrow.borrowId);
     
-    // Nhap ID sach va kiem tra tinh hop le, so luong trong kho
     do {
         bookId = getValidIntegerRange("Nhap Ma sach can muon: ", 1, 0);
         bookIdx = -1;
@@ -686,13 +670,11 @@ void borrowBook() {
     readNonEmptyString(newBorrow.borrowerName, sizeof(newBorrow.borrowerName), "Nhap Ten nguoi muon: ", 1);
     newBorrow.borrowDate = getValidDate("Ngay Muon");
     
-    // Mac dinh chua tra
     newBorrow.borrowReturn.day = 0;
     newBorrow.borrowReturn.month = 0;
     newBorrow.borrowReturn.year = 0;
-    newBorrow.status = 1; // Dang muon
+    newBorrow.status = 1;
     
-    // Giam so luong sach trong kho
     books[bookIdx].quantity--;
     borrows[borrowCount++] = newBorrow;
     
@@ -728,14 +710,12 @@ void returnBook() {
     
     struct Borrow *b = &borrows[borrowIdx];
     
-    // Kiem tra phieu da tra chua
     if (b->status == 0) {
         printf("Loi: Phieu muon ID %d da duoc tra roi (Ngay tra: %d/%d/%d).\n", 
                borrowId, b->borrowReturn.day, b->borrowReturn.month, b->borrowReturn.year);
         return;
     }
     
-    // Nhap ngay tra, dam bao ngay tra phai sau ngay muon
     struct Date returnDate;
     while (1) {
         returnDate = getValidDate("Ngay Tra Sach");
@@ -747,11 +727,9 @@ void returnBook() {
                b->borrowDate.day, b->borrowDate.month, b->borrowDate.year);
     }
     
-    // Cap nhat thong tin phieu muon
     b->borrowReturn = returnDate;
-    b->status = 0; // Trang thai Da tra
-    
-    // Tang so luong sach trong kho
+    b->status = 0; 
+
     int bookIdx = -1;
     for (int i = 0; i < bookCount; i++) {
         if (books[i].bookId == b->bookId) {
@@ -796,8 +774,7 @@ void listBorrowRecords() {
         if (endIndex > borrowCount) {
             endIndex = borrowCount;
         }
-        
-        // In phieu muon cua trang hien tai
+    
         for (int i = startIndex; i < endIndex; i++) {
             struct Borrow *b = &borrows[i];
             char borrowDateStr[11];
@@ -806,10 +783,10 @@ void listBorrowRecords() {
             
             sprintf(borrowDateStr, "%02d/%02d/%4d", b->borrowDate.day, b->borrowDate.month, b->borrowDate.year);
             
-            if (b->status == 1) { // Dang muon
+            if (b->status == 1) { 
                 strcpy(returnDateStr, "Chua tra");
                 strcpy(statusStr, "dang muon");
-            } else { // Da tra
+            } else { 
                 sprintf(returnDateStr, "%02d/%02d/%4d", b->borrowReturn.day, b->borrowReturn.month, b->borrowReturn.year);
                 strcpy(statusStr, "da tra");
             }
@@ -819,7 +796,6 @@ void listBorrowRecords() {
                    borrowDateStr, returnDateStr, statusStr);
         }
         
-        // Menu phan trang
         printf("\nLUA CHON PHAN TRANG:\n");
         printf("1. Trang truoc \n" );
         printf("2. Quay lai Menu\n");
@@ -827,17 +803,17 @@ void listBorrowRecords() {
         choice = getValidMenuChoice("Lua chon cua ban (1, 2, 3): ", 1, 3);
         
         switch (choice) {
-            case 1: // Trang truoc
+            case 1: 
                 if (currentPage > 1) {
                     currentPage--;
                 } else {
                     printf("Dang o trang dau tien!\n");
                 }
                 break;
-            case 2: // Quay lai Menu
+            case 2: 
                 printf("Quay lai Menu chinh\n");
                 return;
-            case 3: // Trang sau
+            case 3: 
                 if (currentPage < totalPages) {
                     currentPage++;
                 } else {
@@ -845,5 +821,5 @@ void listBorrowRecords() {
                 }
                 break;
         }
-    } while (1); // Lap cho den khi nguoi dung chon Quay lai Menu
+    } while (1); 
 }
