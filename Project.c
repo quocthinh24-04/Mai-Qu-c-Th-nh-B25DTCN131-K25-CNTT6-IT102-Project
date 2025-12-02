@@ -68,24 +68,19 @@ int stringContainsCaseInsensitive(const char *haystack, const char *needle) {
     size_t needle_len = strlen(needle);
     size_t haystack_len = strlen(haystack);
 
-    // Chuoi con dai hon chuoi cha thi khong the chua
     if (needle_len > haystack_len) {
         return 0; 
     }
 
-    // Chuyen chuoi can tim (needle) thanh chu thuong
     for (size_t i = 0; i < needle_len; i++) {
         n[i] = tolower((unsigned char)needle[i]);
     }
     n[needle_len] = '\0';
 
-    // Lap qua cac vi tri bat dau co the co cua chuoi con trong chuoi cha
     for (size_t i = 0; i <= haystack_len - needle_len; i++) {
         char sub_h[MAX_TITLE + 1];
-        // Trich xuat chuoi con tu chuoi cha
         strncpy(sub_h, haystack + i, needle_len);
         sub_h[needle_len] = '\0';
-        // Chuyen chuoi con duoc trich xuat thanh chu thuong
         for (size_t j = 0; j < needle_len; j++) {
             sub_h[j] = tolower((unsigned char)sub_h[j]);
         }
@@ -103,9 +98,8 @@ int isBookCurrentlyBorrowed(int bookId) {
     extern int borrowCount; 
 
     for (int i = 0; i < borrowCount; i++) {
-        // Kiem tra ID sach va trang thai la 'Dang muon' (status == 1)
         if (borrows[i].bookId == bookId && borrows[i].status == 1) {
-            return 1; // Dang duoc muon
+            return 1; 
         }
     }
     return 0; 
@@ -197,7 +191,6 @@ void readNonEmptyString(char *dest, int maxSize, const char *prompt, int allowDi
         printf("%s", prompt);
         if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
             size_t len = strlen(buffer);
-            // Loai bo ky tu xuong dong
             if (len > 0 && buffer[len - 1] == '\n') {
                 buffer[len - 1] = '\0';
                 len--;
@@ -216,7 +209,6 @@ void readNonEmptyString(char *dest, int maxSize, const char *prompt, int allowDi
                 char trimmed_str[maxSize];
                 size_t trimmed_len = end - start;
                 size_t copy_len = trimmed_len < maxSize ? trimmed_len : maxSize - 1;
-                // Sao chep noi dung da duoc cat
                 memmove(trimmed_str, buffer + start, copy_len);
                 trimmed_str[copy_len] = '\0';
                 
@@ -650,7 +642,6 @@ void borrowBook() {
     do {
         bookId = getValidIntegerRange("Nhap Ma sach can muon: ", 1, 0);
         bookIdx = -1;
-        // Tim sach
         for (int i = 0; i < bookCount; i++) {
             if (books[i].bookId == bookId) {
                 bookIdx = i;
