@@ -511,14 +511,12 @@ void listBook() {
             endIndex = bookCount;
         }
         
-        // In sach cua trang hien tai
         for (int i = startIndex; i < endIndex; i++) {
             printf("| %-4d | %-40s | %-20s | %-4d | %-8d |\n",
                          books[i].bookId, books[i].title, books[i].author, books[i].publishYear, books[i].quantity);
         }
         printf("+------+------------------------------------------+----------------------+------+----------+\n");
         
-        // Menu phan trang
         printf("\nLUA CHON PHAN TRANG:\n");
         printf("1. Trang truoc \n" );
         printf("2. Quay lai Menu\n");
@@ -570,7 +568,6 @@ void deleteBook() {
         return;
     }
     
-    // Kiem tra xem sach co dang duoc muon khong
     if (isBookCurrentlyBorrowed(bookId)) { 
         printf("Loi: Khong the xoa sach '%s' (ID %d) vi CO NGUOI DANG MUON CHUA TRA!\n", books[idx].title, bookId);
         return; 
